@@ -19,7 +19,7 @@ public class UserRegisteredListener {
 
     private final WalletRepository walletRepository;
 
-    @RabbitListener(queues = "user-registered-queue")
+    @RabbitListener(queues = "wallet.registered.queue")
     public void onUserRegistered(UserRegisteredEvent event){
        log.info("Received UserRegisteredEvent for userId={}",event.getUserId());
        if(walletRepository.existsByUserId(event.getUserId())){

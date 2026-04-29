@@ -28,14 +28,14 @@ public class WalletController {
     }
 
     @PostMapping("/{userId}/credit")
-    public ResponseEntity<Wallet> credit(@PathVariable Long userId, @RequestParam BigDecimal amount){
+    public ResponseEntity<?> credit(@PathVariable Long userId, @RequestParam BigDecimal amount){
             return ResponseEntity.ok(walletService.credit(userId,amount));
         }
 
 
 
     @PostMapping("/{userId}/debit")
-    public ResponseEntity<Wallet> debit(@PathVariable Long userId,@RequestParam BigDecimal amount, String pin){
+    public ResponseEntity<?> debit(@PathVariable Long userId,@RequestParam BigDecimal amount){
         return ResponseEntity.ok(walletService.debit(userId,amount));
 
     }

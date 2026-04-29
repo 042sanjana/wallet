@@ -1,5 +1,6 @@
 package com.ewallet.wallet_service.service;
 
+import com.ewallet.wallet_service.dto.Responsedto;
 import com.ewallet.wallet_service.dto.SetPinRequest;
 import com.ewallet.wallet_service.entity.Wallet;
 import com.ewallet.wallet_service.repository.WalletRepository;
@@ -46,16 +47,19 @@ public class WalletService {
 
 
     @Transactional
-    public Wallet credit(Long userId, BigDecimal amount) {
+    public Responsedto credit(Long userId, BigDecimal amount) {
         if (amount.compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("Credited amount must be positive");
         }
         Wallet wallet = getWalletByUserId(userId);
         wallet.setBalance(wallet.getBalance().add(amount));
-        return walletRepository.save(wallet);
+        walletRepository.save(wallet);
+
+        Responsedto responsedto= new Responsedto(wallet.getEmail(),wallet.getBalance());
+        return  responsedto;
     }
     @Transactional
-      public Wallet debit(Long userId, BigDecimal amount) {
+      public Responsedto debit(Long userId, BigDecimal amount) {
     if (amount.compareTo(BigDecimal.ZERO) <= 0) {
         throw new IllegalArgumentException("Debited amount must be positive");
     }
@@ -72,6 +76,8 @@ public class WalletService {
         throw new RuntimeException("Insufficient balance");
     }
     wallet.setBalance(wallet.getBalance().subtract(amount));
-    return walletRepository.save(wallet);
+    walletRepository.save(wallet);
+    Responsedto responsedto= new Responsedto(wallet.getEmail(),wallet.getBalance());
+    return  responsedto;
     }
 }
