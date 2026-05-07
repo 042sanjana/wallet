@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("")
+
 public class WalletController {
     @Autowired
     private final WalletService walletService;
