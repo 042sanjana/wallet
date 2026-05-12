@@ -59,18 +59,11 @@ public class WalletService {
         return  responsedto;
     }
     @Transactional
-      public Responsedto debit(Long userId, BigDecimal amount) {
+    public Responsedto debit(Long userId, BigDecimal amount) {
     if (amount.compareTo(BigDecimal.ZERO) <= 0) {
         throw new IllegalArgumentException("Debited amount must be positive");
     }
     Wallet wallet = getWalletByUserId(userId);
-
-    Scanner sc=new Scanner(System.in);
-    String pin=sc.nextLine();
-
-    if (!verifyPin(wallet,pin)){
-        throw new RuntimeException("Wrong Pin");
-    }
 
     if (wallet.getBalance().compareTo(amount) < 0) {
         throw new RuntimeException("Insufficient balance");
