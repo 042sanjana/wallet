@@ -1,5 +1,6 @@
 package com.ewallet.wallet_service.controller;
 import com.ewallet.wallet_service.dto.SetPinRequest;
+import com.ewallet.wallet_service.dto.WalletTransactionDTO;
 import com.ewallet.wallet_service.service.WalletService;
 import com.ewallet.wallet_service.entity.Wallet;
 import lombok.RequiredArgsConstructor;
@@ -8,15 +9,25 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 
 public class WalletController {
     @Autowired
     private final WalletService walletService;
+
+    @GetMapping("/{userId}/history")
+    public ResponseEntity<List<WalletTransactionDTO>> getHistory(@PathVariable Long userId) {
+        List<WalletTransactionDTO> history = walletService.getHistory(userId);
+        return ResponseEntity.ok(history);
+    }
+
     @PostMapping("/set-pin")
-    public ResponseEntity<?>setPin(@RequestBody SetPinRequest request, @RequestHeader("Authorization")String token) {
-        return ResponseEntity.ok(walletService.setPin(request));
+    public ResponseEntity<?> setPin(@RequestBody SetPinRequest request) {
+        walletService.setPin(request, "1234");
+        return ResponseEntity.ok("PIN set successfully");
     }
 
     @GetMapping("/{userId}")
@@ -40,5 +51,6 @@ public class WalletController {
         return ResponseEntity.ok(walletService.debit(userId,amount));
 
     }
+
 }
 
