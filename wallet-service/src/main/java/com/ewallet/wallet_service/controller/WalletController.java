@@ -2,7 +2,6 @@ package com.ewallet.wallet_service.controller;
 import com.ewallet.wallet_service.dto.SetPinRequest;
 import com.ewallet.wallet_service.dto.WalletTransactionDTO;
 import com.ewallet.wallet_service.service.WalletService;
-import com.ewallet.wallet_service.entity.Wallet;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -35,14 +34,14 @@ public class WalletController {
         if (walletService.getWalletByUserId(userId) == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("wallet not found for user id: " + userId);
         }
-            return ResponseEntity.ok(walletService.getWalletByUserId(userId));
+        return ResponseEntity.ok(walletService.getWalletByUserId(userId));
 
     }
 
     @PostMapping("/{userId}/credit")
     public ResponseEntity<?> credit(@PathVariable Long userId, @RequestParam BigDecimal amount){
-            return ResponseEntity.ok(walletService.credit(userId,amount));
-        }
+        return ResponseEntity.ok(walletService.credit(userId,amount));
+    }
 
 
 
@@ -52,5 +51,17 @@ public class WalletController {
 
     }
 
-}
+    @PostMapping("/{email}/creditOnTransaction")
+    public ResponseEntity<?> creditOnTransaction(@PathVariable String email, @RequestParam BigDecimal amount){
+        return ResponseEntity.ok(walletService.creditOnTransaction(email,amount));
+    }
 
+
+
+    @PostMapping("/{email}/debitOnTransaction")
+    public ResponseEntity<?> debit(@PathVariable String email, @RequestParam BigDecimal amount){
+        return ResponseEntity.ok(walletService.debitOnTransaction(email,amount));
+
+    }
+
+}

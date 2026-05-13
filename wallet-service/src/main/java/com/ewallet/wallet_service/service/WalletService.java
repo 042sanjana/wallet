@@ -102,6 +102,38 @@ public class WalletService {
         return savedWallet;
     }
 
+    public Wallet creditOnTransaction(String email, BigDecimal amount) {
+
+        if (amount.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException(
+                    "Amount must be positive"
+            );
+        }
+
+        Wallet wallet = walletRepository.findByEmail(email);
+
+        wallet.setBalance(
+                wallet.getBalance().add(amount)
+        );
+
+        Wallet savedWallet = walletRepository.save(wallet);
+
+        logTransaction(
+                wallet.getId(),
+                WalletTransaction.TransactionType.CREDIT,
+                amount,
+                wallet.getBalance()
+        );
+
+        log.info(
+                "Amount {} credited to user {}",
+                amount,
+                email
+        );
+
+        return savedWallet;
+    }
+
     // =========================
     // DEBIT MONEY
     // =========================
@@ -140,6 +172,43 @@ public class WalletService {
                 "Amount {} debited from user {}",
                 amount,
                 userId
+        );
+
+        return savedWallet;
+    }
+
+    public Wallet debitOnTransaction(String email, BigDecimal amount) {
+        if (amount.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException(
+                    "Amount must be positive"
+            );
+        }
+
+        Wallet wallet = walletRepository.findByEmail(email);
+
+        if (wallet.getBalance().compareTo(amount) < 0) {
+            throw new RuntimeException(
+                    "Insufficient balance"
+            );
+        }
+
+        wallet.setBalance(
+                wallet.getBalance().subtract(amount)
+        );
+
+        Wallet savedWallet = walletRepository.save(wallet);
+
+        logTransaction(
+                wallet.getId(),
+                WalletTransaction.TransactionType.DEBIT,
+                amount,
+                wallet.getBalance()
+        );
+
+        log.info(
+                "Amount {} debited from user {}",
+                amount,
+                wallet.getId()
         );
 
         return savedWallet;
@@ -205,4 +274,6 @@ public class WalletService {
 
         return dto;
     }
+
+
 }
